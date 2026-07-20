@@ -1,6 +1,0 @@
-allowBuilds:
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
-minimumReleaseAgeExclude:
-  - '@tanstack/query-core@5.101.3'
-  - '@tanstack/react-query@5.101.3'
