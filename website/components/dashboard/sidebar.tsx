@@ -1,14 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
-  User,
+  BarChart3,
+  Users,
+  FolderKanban,
+  CreditCard,
+  Settings,
+  HelpCircle,
   ChevronLeft,
-  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -17,11 +22,20 @@ interface NavItem {
   label: string;
   href: string;
   icon: LucideIcon;
+  badge?: string;
 }
 
-const navItems: NavItem[] = [
+const mainNavItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Profile", href: "/profile", icon: User },
+  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, badge: "New" },
+  { label: "Users", href: "/dashboard/users", icon: Users },
+  { label: "Projects", href: "/dashboard/projects", icon: FolderKanban },
+  { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
+];
+
+const bottomNavItems: NavItem[] = [
+  { label: "Settings", href: "/dashboard/settings", icon: Settings },
+  { label: "Help", href: "/dashboard/help", icon: HelpCircle },
 ];
 
 interface SidebarProps {
@@ -33,28 +47,88 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside
-      className={cn(
-        "hidden border-r bg-background transition-all duration-300 lg:flex lg:flex-col",
-        collapsed ? "w-14" : "w-56",
-      )}
+    <motion.aside
+      initial={false}
+      animate={{ width: collapsed ? 56 : 240 }}
+      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+      className="hidden border-r bg-sidebar text-sidebar-foreground lg:flex lg:flex-col"
     >
-      <div className="flex h-14 items-center gap-2 border-b px-3">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
+      {/* Logo */}
+      <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-3">
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground">
           S
         </div>
-        <span
-          className={cn(
-            "text-sm font-semibold transition-opacity duration-300",
-            collapsed && "opacity-0",
+        <AnimatePresence>
+          {!collapsed && (
+            <motion.span
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: "auto" }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden text-sm font-semibold"
+            >
+              SaaS Platform
+            </motion.span>
           )}
-        >
-          SaaS
-        </span>
+        </AnimatePresence>
       </div>
 
+      {/* Main Nav */}
       <nav className="flex-1 space-y-1 p-2">
-        {navItems.map((item) => {
+        {mainNavItems.map((item) => {
+          const Icon = item.icon;
+          const active = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "relative flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors",
+                collapsed && "justify-center px-0",
+                active
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+              )}
+            >
+              {active && (
+                <motion.div
+                  layoutId="sidebar-active"
+                  className="absolute inset-0 rounded-lg bg-sidebar-accent"
+                  transition={{ type: "spring" as const, stiffness: 350, damping: 30 }}
+                />
+              )}
+              <Icon className="relative z-10 size-4 shrink-0" />
+              <AnimatePresence>
+                {!collapsed && (
+                  <motion.span
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "auto" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="relative z-10 overflow-hidden whitespace-nowrap"
+                  >
+                    {item.label}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+              {!collapsed && item.badge && (
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="relative z-10 ml-auto rounded-full bg-sidebar-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-sidebar-primary"
+                >
+                  {item.badge}
+                </motion.span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Bottom Nav */}
+      <div className="space-y-1 p-2">
+        <Separator className="mb-2" />
+        {bottomNavItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
           return (
@@ -63,41 +137,46 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
               href={item.href}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors",
-                active
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                 collapsed && "justify-center px-0",
+                active
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
               )}
             >
               <Icon className="size-4 shrink-0" />
-              <span
-                className={cn(
-                  "transition-opacity duration-300",
-                  collapsed && "hidden",
+              <AnimatePresence>
+                {!collapsed && (
+                  <motion.span
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "auto" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden whitespace-nowrap"
+                  >
+                    {item.label}
+                  </motion.span>
                 )}
-              >
-                {item.label}
-              </span>
+              </AnimatePresence>
             </Link>
           );
         })}
-      </nav>
 
-      <div className="border-t p-2">
+        {/* Collapse Button */}
         <Button
           variant="ghost"
           size="icon"
-          className="size-8 w-full"
+          className="mt-1 size-8 w-full text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
           onClick={onToggleCollapse}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? (
-            <ChevronRight className="size-4" />
-          ) : (
+          <motion.div
+            animate={{ rotate: collapsed ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
             <ChevronLeft className="size-4" />
-          )}
+          </motion.div>
         </Button>
       </div>
-    </aside>
+    </motion.aside>
   );
 }

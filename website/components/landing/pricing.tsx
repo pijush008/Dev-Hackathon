@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 interface PricingTier {
@@ -75,46 +75,69 @@ const item = {
 
 export function Pricing() {
   return (
-    <section id="pricing" className="px-4 py-16 sm:py-24">
+    <section id="pricing" className="relative px-4 py-20 sm:py-28">
+      {/* Background */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/20 to-background" />
+
       <div className="mx-auto max-w-6xl">
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
+          >
+            <Sparkles className="size-3.5" />
             Pricing
-          </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
+          >
             Simple, transparent pricing
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground"
+          >
             No hidden fees. No surprises. Pay only for what you need.
-          </p>
+          </motion.p>
         </div>
 
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          className="mt-12 grid gap-6 lg:grid-cols-3"
+          viewport={{ once: true, margin: "-100px" }}
+          className="mt-14 grid gap-6 lg:grid-cols-3"
         >
           {tiers.map((tier) => (
             <motion.div
               key={tier.name}
               variants={item}
-              className={`relative flex flex-col rounded-xl border bg-card p-6 ${
+              className={`relative flex flex-col rounded-2xl border bg-card p-7 transition-all duration-300 ${
                 tier.highlighted
-                  ? "border-primary shadow-lg ring-1 ring-primary"
-                  : ""
+                  ? "border-primary shadow-xl shadow-primary/10 scale-[1.02]"
+                  : "hover:shadow-lg hover:shadow-primary/5"
               }`}
             >
               {tier.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-medium text-primary-foreground">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-lg shadow-primary/25">
                   Most popular
                 </div>
               )}
               <div>
                 <h3 className="text-lg font-semibold">{tier.name}</h3>
-                <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">{tier.price}</span>
+                <div className="mt-3 flex items-baseline gap-1">
+                  <span className="text-4xl font-bold tracking-tight">
+                    {tier.price}
+                  </span>
                   {tier.price !== "Custom" && (
                     <span className="text-sm text-muted-foreground">/mo</span>
                   )}
@@ -124,13 +147,15 @@ export function Pricing() {
                 </p>
               </div>
 
-              <ul className="mt-6 flex-1 space-y-2.5">
+              <ul className="mt-6 flex-1 space-y-3">
                 {tier.features.map((feature) => (
                   <li
                     key={feature}
-                    className="flex items-center gap-2 text-sm"
+                    className="flex items-center gap-2.5 text-sm"
                   >
-                    <Check className="size-4 shrink-0 text-primary" />
+                    <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                      <Check className="size-3 text-primary" />
+                    </div>
                     {feature}
                   </li>
                 ))}
@@ -142,9 +167,9 @@ export function Pricing() {
                     ? "mailto:sales@example.com"
                     : "/auth/signup"
                 }
-                className={`mt-6 inline-flex h-9 w-full items-center justify-center rounded-lg px-4 text-sm font-medium transition-colors ${
+                className={`mt-7 inline-flex h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-medium transition-all ${
                   tier.highlighted
-                    ? "bg-primary text-primary-foreground hover:bg-primary/80"
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
                     : "border border-border bg-background text-foreground hover:bg-muted"
                 }`}
               >

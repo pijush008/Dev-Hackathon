@@ -1,5 +1,10 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { StatCards } from "@/components/dashboard/stat-cards";
+import { OverviewChart } from "@/components/dashboard/overview-chart";
+import { ActivityFeed } from "@/components/dashboard/activity-feed";
+import { QuickActions } from "@/components/dashboard/quick-actions";
+import { WelcomeHeader } from "@/components/dashboard/welcome-header";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -11,31 +16,28 @@ export default async function DashboardPage() {
     redirect("/auth/login");
   }
 
+  const displayName =
+    user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User";
+
+  const avatarUrl =
+    user.user_metadata?.avatar_url ?? null;
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Welcome back{user.email ? `, ${user.email.split("@")[0]}` : ""}!
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Here&apos;s what&apos;s happening with your projects today.
-        </p>
+      <WelcomeHeader name={displayName} email={user.email ?? ""} avatarUrl={avatarUrl} />
+
+      <StatCards />
+
+      <div className="grid gap-6 lg:grid-cols-7">
+        <div className="lg:col-span-4">
+          <OverviewChart />
+        </div>
+        <div className="lg:col-span-3">
+          <ActivityFeed />
+        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-lg border p-4">
-          <p className="text-sm text-muted-foreground">Total Revenue</p>
-          <p className="mt-1 text-2xl font-semibold">$0.00</p>
-        </div>
-        <div className="rounded-lg border p-4">
-          <p className="text-sm text-muted-foreground">Active Users</p>
-          <p className="mt-1 text-2xl font-semibold">0</p>
-        </div>
-        <div className="rounded-lg border p-4">
-          <p className="text-sm text-muted-foreground">Projects</p>
-          <p className="mt-1 text-2xl font-semibold">0</p>
-        </div>
-      </div>
+      <QuickActions />
     </div>
   );
 }

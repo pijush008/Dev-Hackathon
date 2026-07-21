@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FaqItem {
@@ -47,33 +47,62 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="px-4 py-16 sm:py-24">
+    <section id="faq" className="relative px-4 py-20 sm:py-28">
+      {/* Background */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/30 to-background" />
+
       <div className="mx-auto max-w-3xl">
         <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
+          >
+            <HelpCircle className="size-3.5" />
             FAQ
-          </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
+          >
             Frequently asked questions
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground"
+          >
             Everything you need to know about our platform.
-          </p>
+          </motion.p>
         </div>
 
-        <div className="mt-12 space-y-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="mt-14 space-y-3"
+        >
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div
                 key={index}
-                className="rounded-xl border bg-card transition-colors"
+                className={cn(
+                  "overflow-hidden rounded-xl border bg-card transition-all duration-300",
+                  isOpen && "shadow-lg shadow-primary/5",
+                )}
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-medium outline-none"
                 >
-                  {faq.question}
+                  <span>{faq.question}</span>
                   <ChevronDown
                     className={cn(
                       "size-4 shrink-0 text-muted-foreground transition-transform duration-200",
@@ -100,7 +129,7 @@ export function FAQ() {
               </div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
