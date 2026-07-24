@@ -1,10 +1,37 @@
 import { redirect } from "next/navigation";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/server";
-import { StatCards } from "@/components/dashboard/stat-cards";
-import { OverviewChart } from "@/components/dashboard/overview-chart";
-import { ActivityFeed } from "@/components/dashboard/activity-feed";
-import { QuickActions } from "@/components/dashboard/quick-actions";
 import { WelcomeHeader } from "@/components/dashboard/welcome-header";
+import { SignOutButton } from "@/components/dashboard/sign-out-button";
+
+const StatCards = dynamic(
+  () => import("@/components/dashboard/stat-cards").then((m) => m.StatCards),
+  { ssr: false },
+);
+
+const OverviewChart = dynamic(
+  () =>
+    import("@/components/dashboard/overview-chart").then(
+      (m) => m.OverviewChart,
+    ),
+  { ssr: false },
+);
+
+const ActivityFeed = dynamic(
+  () =>
+    import("@/components/dashboard/activity-feed").then(
+      (m) => m.ActivityFeed,
+    ),
+  { ssr: false },
+);
+
+const QuickActions = dynamic(
+  () =>
+    import("@/components/dashboard/quick-actions").then(
+      (m) => m.QuickActions,
+    ),
+  { ssr: false },
+);
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -19,12 +46,18 @@ export default async function DashboardPage() {
   const displayName =
     user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "User";
 
-  const avatarUrl =
-    user.user_metadata?.avatar_url ?? null;
+  const avatarUrl = user.user_metadata?.avatar_url ?? null;
 
   return (
     <div className="space-y-6">
-      <WelcomeHeader name={displayName} email={user.email ?? ""} avatarUrl={avatarUrl} />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <WelcomeHeader
+          name={displayName}
+          email={user.email ?? ""}
+          avatarUrl={avatarUrl}
+        />
+        <SignOutButton />
+      </div>
 
       <StatCards />
 

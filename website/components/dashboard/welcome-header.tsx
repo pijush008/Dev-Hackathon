@@ -35,11 +35,13 @@ export function WelcomeHeader({ name, email, avatarUrl }: WelcomeHeaderProps) {
       className="flex items-center gap-4"
     >
       {avatarUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={avatarUrl}
           alt={name}
-          className="size-12 rounded-full ring-2 ring-border"
+          className="size-12 rounded-full ring-2 ring-border object-cover"
+          width={48}
+          height={48}
+          loading="lazy"
         />
       ) : (
         <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-sm font-bold text-primary-foreground ring-2 ring-border">

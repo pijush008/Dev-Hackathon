@@ -3,27 +3,54 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import {
+  loginSchema,
+  signupSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from "@/lib/validations/auth";
 
 export interface AuthState {
   error: string | null;
+  fieldErrors?: Record<string, string>;
+}
+
+function formatZodError(error: {
+  issues: Array<{ message: string; path: readonly PropertyKey[] }>;
+}): AuthState {
+  const fieldErrors: Record<string, string> = {};
+  const generalErrors: string[] = [];
+
+  for (const issue of error.issues) {
+    const field = issue.path[0];
+    if (typeof field === "string") {
+      fieldErrors[field] = issue.message;
+    } else {
+      generalErrors.push(issue.message);
+    }
+  }
+
+  return {
+    error: generalErrors.length > 0 ? generalErrors.join(". ") : null,
+    fieldErrors: Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined,
+  };
 }
 
 export async function signInWithEmail(
   _prevState: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
-  const supabase = await createClient();
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const parsed = loginSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
 
-  if (!email || !password) {
-    return { error: "Email and password are required." };
+  if (!parsed.success) {
+    return formatZodError(parsed.error);
   }
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
     if (error.message.includes("Invalid login credentials")) {
@@ -40,22 +67,23 @@ export async function signUpWithEmail(
   _prevState: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
+  const parsed = signupSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+  });
+
+  if (!parsed.success) {
+    return formatZodError(parsed.error);
+  }
+
   const supabase = await createClient();
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-
-  if (!email || !password) {
-    return { error: "Email and password are required." };
-  }
-
-  if (password.length < 6) {
-    return { error: "Password must be at least 6 characters." };
-  }
-
   const { error } = await supabase.auth.signUp({
-    email,
-    password,
+    email: parsed.data.email,
+    password: parsed.data.password,
     options: {
+      data: { full_name: parsed.data.name },
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/callback`,
     },
   });
@@ -70,7 +98,7 @@ export async function signUpWithEmail(
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect("/auth/verify-email");
 }
 
 export async function signInWithGoogle() {
@@ -85,6 +113,56 @@ export async function signInWithGoogle() {
     redirect("/auth/login?error=google_auth_failed");
   }
   redirect(data.url);
+}
+
+export async function sendPasswordResetEmail(
+  _prevState: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const parsed = forgotPasswordSchema.safeParse({
+    email: formData.get("email"),
+  });
+
+  if (!parsed.success) {
+    return formatZodError(parsed.error);
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/reset-password`,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { error: null };
+}
+
+export async function updatePassword(
+  _prevState: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const parsed = resetPasswordSchema.safeParse({
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+  });
+
+  if (!parsed.success) {
+    return formatZodError(parsed.error);
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({
+    password: parsed.data.password,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/auth/login?reset=success");
 }
 
 export async function signOut() {

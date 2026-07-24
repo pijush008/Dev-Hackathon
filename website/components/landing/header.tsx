@@ -39,12 +39,14 @@ export function Header() {
         <div className="hidden items-center gap-3 md:flex">
           <Link
             href="/auth/login"
+            prefetch={true}
             className="inline-flex h-9 items-center justify-center rounded-lg px-4 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Sign in
           </Link>
           <Link
             href="/auth/signup"
+            prefetch={true}
             className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-all hover:brightness-110"
           >
             Get started

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
@@ -25,15 +24,12 @@ export function OverviewChart() {
         <div className="flex items-end gap-2 h-48">
           {values.map((value, i) => (
             <div key={i} className="flex flex-1 flex-col items-center gap-2">
-              <motion.div
-                initial={{ height: 0 }}
-                animate={{ height: `${(value / maxValue) * 100}%` }}
-                transition={{
-                  delay: i * 0.1,
-                  duration: 0.5,
-                  ease: [0.4, 0, 0.2, 1],
+              <div
+                className="w-full rounded-t-md bg-gradient-to-t from-primary/80 to-primary/40 hover:from-primary hover:to-primary/60 transition-colors cursor-pointer animate-bar-grow"
+                style={{
+                  height: `${(value / maxValue) * 100}%`,
+                  animationDelay: `${i * 0.1}s`,
                 }}
-                className="w-full rounded-t-md bg-gradient-to-t from-primary/80 to-primary/40 hover:from-primary hover:to-primary/60 transition-colors cursor-pointer"
               />
               <span className="text-[11px] text-muted-foreground">
                 {months[i]}
