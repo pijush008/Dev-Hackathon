@@ -138,7 +138,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
       <div className="space-y-1 p-2">
         <Separator className="mb-2" />
         <Link
-          href="/#pricing"
+          href="/settings/subscription"
           className={cn(
             "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors",
             collapsed && "justify-center px-0",
