@@ -687,19 +687,17 @@ auth.users
 
 ## Screenshots
 
-> Replace placeholders with actual screenshots.
-
 ### Landing Page
-![Landing Page](docs/screenshots/landing.png)
+![Landing Page](website/docs/screenshots/landing.png)
 
 ### Dashboard
-![Dashboard](docs/screenshots/dashboard.png)
+![Dashboard](website/docs/screenshots/dashboard.png)
 
 ### AI Chat
-![AI Healthcare Assistant](docs/screenshots/chat.png)
+![AI Healthcare Assistant](website/docs/screenshots/chat.png)
 
 ### Medical Reports
-![Medical Reports](docs/screenshots/reports.png)
+![Medical Reports](website/docs/screenshots/reports.png)
 
 ---
 
