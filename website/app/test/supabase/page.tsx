@@ -111,16 +111,14 @@ export default function SupabaseTestPage() {
             <p className="text-sm text-neutral-400">Loading...</p>
           ) : session ? (
             <div className="space-y-2 text-sm">
-              <Row label="Access token" value={session.access_token} mono truncate />
-              <Row label="Refresh token" value={session.refresh_token} mono truncate />
-              <Row
-                label="Expires at"
-                value={new Date(session.expires_at! * 1000).toLocaleString()}
-              />
               <Row label="Token type" value={session.token_type ?? "N/A"} />
               <Row
                 label="Provider"
                 value={session.user?.app_metadata?.provider ?? "N/A"}
+              />
+              <Row
+                label="Expires at"
+                value={new Date(session.expires_at! * 1000).toLocaleString()}
               />
             </div>
           ) : (

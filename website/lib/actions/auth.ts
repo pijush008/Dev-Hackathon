@@ -38,7 +38,7 @@ function formatZodError(error: {
 
 export async function signInWithEmail(
   _prevState: AuthState,
-  formData: FormData,
+  formData: FormData
 ): Promise<AuthState> {
   const parsed = loginSchema.safeParse({
     email: formData.get("email"),
@@ -53,6 +53,7 @@ export async function signInWithEmail(
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
+    console.error("Sign in error:", error.message);
     if (error.message.includes("Invalid login credentials")) {
       return { error: "Invalid email or password. Please try again." };
     }
@@ -60,12 +61,12 @@ export async function signInWithEmail(
   }
 
   revalidatePath("/", "layout");
-  redirect("/dashboard");
+  redirect("/");
 }
 
 export async function signUpWithEmail(
   _prevState: AuthState,
-  formData: FormData,
+  formData: FormData
 ): Promise<AuthState> {
   const parsed = signupSchema.safeParse({
     name: formData.get("name"),
@@ -89,6 +90,7 @@ export async function signUpWithEmail(
   });
 
   if (error) {
+    console.error("Sign up error:", error.message);
     if (error.message.includes("already registered")) {
       return {
         error: "An account with this email already exists. Please sign in.",
@@ -110,6 +112,7 @@ export async function signInWithGoogle() {
     },
   });
   if (error) {
+    console.error("Google OAuth error:", error.message);
     redirect("/auth/login?error=google_auth_failed");
   }
   redirect(data.url);
@@ -117,7 +120,7 @@ export async function signInWithGoogle() {
 
 export async function sendPasswordResetEmail(
   _prevState: AuthState,
-  formData: FormData,
+  formData: FormData
 ): Promise<AuthState> {
   const parsed = forgotPasswordSchema.safeParse({
     email: formData.get("email"),
@@ -133,6 +136,7 @@ export async function sendPasswordResetEmail(
   });
 
   if (error) {
+    console.error("Password reset email error:", error.message);
     return { error: error.message };
   }
 
@@ -141,7 +145,7 @@ export async function sendPasswordResetEmail(
 
 export async function updatePassword(
   _prevState: AuthState,
-  formData: FormData,
+  formData: FormData
 ): Promise<AuthState> {
   const parsed = resetPasswordSchema.safeParse({
     password: formData.get("password"),
@@ -158,6 +162,7 @@ export async function updatePassword(
   });
 
   if (error) {
+    console.error("Update password error:", error.message);
     return { error: error.message };
   }
 

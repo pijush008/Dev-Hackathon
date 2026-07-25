@@ -1,37 +1,48 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Command } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
-interface SearchInputProps {
+interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
 }
 
-export function SearchInput({ className }: SearchInputProps) {
-  const [focused, setFocused] = useState(false);
+export function SearchInput({ className, ...props }: SearchInputProps) {
+  const [value, setValue] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    if (props.onChange) props.onChange(e);
+  };
 
   return (
-    <div
-      className={cn(
-        "relative flex items-center gap-2 rounded-lg border bg-muted/50 px-3 py-1.5 text-sm transition-all",
-        focused
-          ? "border-ring ring-1 ring-ring/20 bg-background"
-          : "border-transparent hover:bg-muted",
-        className,
-      )}
-    >
-      <Search className="size-4 shrink-0 text-muted-foreground" />
+    <div className={cn("relative flex items-center", className)}>
+      <Search className="absolute left-3 size-4 text-muted-foreground" aria-hidden="true" />
       <input
-        type="text"
+        type="search"
         placeholder="Search..."
-        className="w-full bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none"
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        value={value}
+        onChange={handleChange}
+        className={cn(
+          "flex h-9 w-full min-w-0 appearance-none rounded-md border border-input bg-background px-9 py-1.5 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          value && "pr-9"
+        )}
+        {...props}
       />
-      <kbd className="pointer-events-none hidden items-center gap-0.5 rounded-md border bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:flex">
-        <Command className="size-2.5" />K
-      </kbd>
+      {value && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="absolute right-1 h-7 w-7 p-0"
+          onClick={() => setValue("")}
+          aria-label="Clear search"
+        >
+          <X className="size-3.5" />
+        </Button>
+      )}
     </div>
   );
 }

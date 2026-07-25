@@ -196,7 +196,7 @@ export function DoctorsTable({ data, onView, onBook }: DoctorsTableProps) {
                       <div className="flex gap-1">
                         <Button
                           variant="ghost"
-                          size="icon-xs"
+                          size="icon"
                           onClick={() => onView?.(d)}
                         >
                           <MoreHorizontal className="size-3.5" />

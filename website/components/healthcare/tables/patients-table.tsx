@@ -211,7 +211,7 @@ export function PatientsTable({ data, onView, onCall, onEmail }: PatientsTablePr
                       <TableCell>
                         <Button
                           variant="ghost"
-                          size="icon-xs"
+                          size="icon"
                           onClick={() => onView?.(p)}
                         >
                           <MoreHorizontal className="size-3.5" />

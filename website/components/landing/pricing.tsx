@@ -15,48 +15,49 @@ interface PricingTier {
 
 const tiers: PricingTier[] = [
   {
-    name: "Starter",
-    price: "$19",
-    description: "Perfect for individuals and small projects.",
+    name: "Community",
+    price: "Free",
+    description: "Essential health tools for individuals and families.",
     features: [
-      "Up to 5 projects",
-      "10GB storage",
-      "Basic analytics",
-      "Email support",
-      "API access",
+      "AI symptom checker (5 uses/month)",
+      "Medication reminders",
+      "Crisis resource directory",
+      "Community support groups",
+      "Basic health dashboard",
     ],
-    cta: "Get started",
+    cta: "Get started free",
   },
   {
     name: "Pro",
-    price: "$79",
-    description: "For growing teams that need more power.",
+    price: "$9",
+    description: "Full access for individuals who need comprehensive care.",
     highlighted: true,
     features: [
-      "Unlimited projects",
-      "100GB storage",
-      "Advanced analytics",
-      "Priority support",
-      "Team collaboration",
-      "Custom domains",
-      "Audit logs",
+      "Unlimited symptom checks",
+      "Medical report upload & AI analysis",
+      "Teleconsultation booking",
+      "Mental health tracking",
+      "Safety plan management",
+      "Priority AI responses",
+      "Ad-free experience",
     ],
     cta: "Start free trial",
   },
   {
-    name: "Enterprise",
+    name: "Clinic",
     price: "Custom",
-    description: "For large organizations with custom needs.",
+    description: "For clinics, NGOs, and rural health programs.",
     features: [
-      "Unlimited everything",
-      "Dedicated infrastructure",
-      "Custom integrations",
-      "24/7 phone support",
-      "SLA guarantee",
-      "SSO / SAML",
-      "On-premise option",
+      "Multi-provider dashboard",
+      "Patient management (up to 500)",
+      "Bulk medication management",
+      "Custom crisis protocols",
+      "API access & integrations",
+      "Dedicated support & SLA",
+      "HIPAA compliance tools",
+      "White-label option",
     ],
-    cta: "Contact sales",
+    cta: "Contact us",
   },
 ];
 
@@ -76,7 +77,6 @@ const item = {
 export function Pricing() {
   return (
     <section id="pricing" className="relative px-4 py-20 sm:py-28">
-      {/* Background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/20 to-background" />
 
       <div className="mx-auto max-w-6xl">
@@ -85,7 +85,7 @@ export function Pricing() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400"
           >
             <Sparkles className="size-3.5" />
             Pricing
@@ -97,7 +97,7 @@ export function Pricing() {
             transition={{ delay: 0.1 }}
             className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
           >
-            Simple, transparent pricing
+            Healthcare that fits your budget
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -106,7 +106,8 @@ export function Pricing() {
             transition={{ delay: 0.2 }}
             className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground"
           >
-            No hidden fees. No surprises. Pay only for what you need.
+            Start free. Upgrade when you need more. No hidden fees, no surprises
+            — because your health shouldn&apos;t have a paywall.
           </motion.p>
         </div>
 
@@ -123,12 +124,12 @@ export function Pricing() {
               variants={item}
               className={`relative flex flex-col rounded-2xl border bg-card p-7 transition-all duration-300 ${
                 tier.highlighted
-                  ? "border-primary shadow-xl shadow-primary/10 scale-[1.02]"
+                  ? "border-emerald-500 shadow-xl shadow-emerald-500/10 scale-[1.02]"
                   : "hover:shadow-lg hover:shadow-primary/5"
               }`}
             >
               {tier.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow-lg shadow-primary/25">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-emerald-600 px-3 py-1 text-xs font-medium text-white shadow-lg shadow-emerald-600/25">
                   Most popular
                 </div>
               )}
@@ -138,7 +139,7 @@ export function Pricing() {
                   <span className="text-4xl font-bold tracking-tight">
                     {tier.price}
                   </span>
-                  {tier.price !== "Custom" && (
+                  {tier.price !== "Custom" && tier.price !== "Free" && (
                     <span className="text-sm text-muted-foreground">/mo</span>
                   )}
                 </div>
@@ -153,8 +154,8 @@ export function Pricing() {
                     key={feature}
                     className="flex items-center gap-2.5 text-sm"
                   >
-                    <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                      <Check className="size-3 text-primary" />
+                    <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
+                      <Check className="size-3 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     {feature}
                   </li>
@@ -163,13 +164,13 @@ export function Pricing() {
 
               <Link
                 href={
-                  tier.name === "Enterprise"
-                    ? "mailto:sales@example.com"
+                  tier.name === "Clinic"
+                    ? "mailto:support@carecompass.app"
                     : "/auth/signup"
                 }
                 className={`mt-7 inline-flex h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-medium transition-all ${
                   tier.highlighted
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:brightness-110"
+                    ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 hover:bg-emerald-700"
                     : "border border-border bg-background text-foreground hover:bg-muted"
                 }`}
               >

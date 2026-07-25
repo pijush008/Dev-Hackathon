@@ -44,7 +44,7 @@ export default async function ProfilePage() {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
         <Link
-          href="/dashboard"
+          href="/"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-4" />

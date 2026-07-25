@@ -213,7 +213,7 @@ export function AppointmentsTable({
                               {a.status === "in-progress" && a.type === "video" && (
                                 <Button
                                   variant="ghost"
-                                  size="icon-xs"
+                                  size="icon"
                                   onClick={() => onJoin?.(a)}
                                   title="Join Call"
                                 >
@@ -222,7 +222,7 @@ export function AppointmentsTable({
                               )}
                               <Button
                                 variant="ghost"
-                                size="icon-xs"
+                                size="icon"
                                 onClick={() => onReschedule?.(a)}
                                 title="Reschedule"
                               >
@@ -232,7 +232,7 @@ export function AppointmentsTable({
                           )}
                           <Button
                             variant="ghost"
-                            size="icon-xs"
+                            size="icon"
                             onClick={() => onView?.(a)}
                           >
                             <MoreHorizontal className="size-3.5" />

@@ -12,34 +12,44 @@ interface FaqItem {
 
 const faqs: FaqItem[] = [
   {
-    question: "How does the free trial work?",
+    question: "Is CareCompass a replacement for my doctor?",
     answer:
-      "You get full access to the Pro plan for 14 days with no credit card required. At the end of your trial, you can choose a plan that fits your needs or downgrade to the free Starter plan.",
+      "No. CareCompass is a decision-support tool, not a medical provider. Our AI symptom checker helps you understand when to seek care, and our teleconsultation connects you with licensed doctors. We never replace the patient-physician relationship.",
   },
   {
-    question: "Can I upgrade or downgrade my plan?",
+    question: "Is my health data private and secure?",
     answer:
-      "Yes, you can change your plan at any time. Upgrades take effect immediately, and downgrades apply at the start of your next billing cycle. Your data is always preserved.",
+      "Absolutely. We use end-to-end encryption, Supabase Row-Level Security on every table, and never sell your data. We're designed with HIPAA guidelines in mind. Your medical reports, mood logs, and chat history are visible only to you.",
   },
   {
-    question: "What kind of support do you offer?",
+    question: "Does it work in areas with poor internet?",
     answer:
-      "Starter plans include email support with a 24-hour response time. Pro plans get priority support with a 4-hour response time. Enterprise plans include 24/7 phone support with a dedicated account manager.",
+      "Yes. CareCompass is a Progressive Web App (PWA) that works offline on mobile. The symptom checker and medication reminders work without a connection. Teleconsultation requires internet but is optimized for low-bandwidth scenarios.",
   },
   {
-    question: "Is my data secure?",
+    question: "What happens if the AI detects a crisis?",
     answer:
-      "Absolutely. We are SOC 2 compliant and use end-to-end encryption for all data in transit and at rest. We also offer SSO/SAML for enterprise plans and maintain comprehensive audit logs.",
+      "Our two-pass crisis detection (keyword matching + LLM analysis) immediately displays crisis resources including the 988 Suicide & Crisis Lifeline, Crisis Text Line, and local emergency services. We never ignore a potential crisis — the system defaults to providing help.",
   },
   {
-    question: "Can I cancel my subscription?",
+    question: "Is the Community plan really free?",
     answer:
-      "Yes, you can cancel anytime from your account settings. Your access continues until the end of your billing period, and you can export your data at any time.",
+      "Yes. The Community plan is free forever with no credit card required. It includes 5 AI symptom checks per month, medication reminders, crisis resources, support groups, and a basic health dashboard. We believe essential health tools shouldn't have a paywall.",
   },
   {
-    question: "Do you offer custom pricing for large teams?",
+    question: "Can clinics and NGOs use CareCompass?",
     answer:
-      "Yes, our Enterprise plan is fully customizable. Contact our sales team for a personalized quote that matches your infrastructure, compliance, and support requirements.",
+      "Yes. Our Clinic plan is designed for healthcare organizations, NGOs, and rural health programs. It includes patient management, bulk medication tracking, custom crisis protocols, API access, and HIPAA compliance tools. Contact us for pricing.",
+  },
+  {
+    question: "How accurate is the AI symptom checker?",
+    answer:
+      "Our AI provides evidence-based guidance using clinical data, but it's not a diagnosis. It helps you understand urgency levels (emergency, urgent, routine) and suggests appropriate specialists. Always consult a healthcare professional for medical decisions.",
+  },
+  {
+    question: "What mental health support is available?",
+    answer:
+      "CareCompass includes therapeutic AI chat, mood and anxiety tracking, safety plan management, and moderated community support groups for anxiety, depression, grief, addiction, chronic pain, and caregiver burnout. Crisis detection is always active.",
   },
 ];
 
@@ -48,7 +58,6 @@ export function FAQ() {
 
   return (
     <section id="faq" className="relative px-4 py-20 sm:py-28">
-      {/* Background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/30 to-background" />
 
       <div className="mx-auto max-w-3xl">
@@ -57,7 +66,7 @@ export function FAQ() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400"
           >
             <HelpCircle className="size-3.5" />
             FAQ
@@ -78,7 +87,8 @@ export function FAQ() {
             transition={{ delay: 0.2 }}
             className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground"
           >
-            Everything you need to know about our platform.
+            Everything you need to know about using CareCompass for your
+            healthcare journey.
           </motion.p>
         </div>
 
@@ -95,7 +105,7 @@ export function FAQ() {
                 key={index}
                 className={cn(
                   "overflow-hidden rounded-xl border bg-card transition-all duration-300",
-                  isOpen && "shadow-lg shadow-primary/5",
+                  isOpen && "shadow-lg shadow-emerald-500/5",
                 )}
               >
                 <button

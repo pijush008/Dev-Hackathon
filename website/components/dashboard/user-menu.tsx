@@ -1,64 +1,114 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { LogOut, User, ChevronDown } from "lucide-react";
-import {
-  DropdownMenuRoot,
-  DropdownMenuTrigger,
-  DropdownMenuPopup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { LogOut, User, Settings, Shield } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { signOut } from "@/lib/actions/auth";
-import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export function UserMenu() {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const { user, displayName, email, initials, loading } = useAuth();
 
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setUserEmail(data.user?.email ?? null);
-    });
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const initials = userEmail
-    ? userEmail
-        .split("@")[0]
-        .split("+")[0]
-        .slice(0, 2)
-        .toUpperCase()
-    : "U";
-
-  const displayName = userEmail?.split("@")[0] ?? "User";
+  if (loading) {
+    return (
+      <div className="size-8 animate-pulse rounded-full bg-muted" />
+    );
+  }
 
   return (
-    <DropdownMenuRoot>
-      <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm outline-none transition-colors hover:bg-muted data-[open]:bg-muted">
-        <div className="flex size-7 items-center justify-center rounded-full bg-primary text-[11px] font-medium text-primary-foreground">
-          {initials}
-        </div>
-        <span className="hidden text-sm font-medium sm:inline">{displayName}</span>
-        <ChevronDown className="hidden size-3 text-muted-foreground sm:block" />
-      </DropdownMenuTrigger>
-      <DropdownMenuPopup>
-        <DropdownMenuItem onClick={() => router.push("/profile")}>
-          <User className="size-4" />
-          Profile
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => startTransition(() => signOut())}
-          disabled={isPending}
-        >
-          <LogOut className="size-4" />
-          Sign out
-        </DropdownMenuItem>
-      </DropdownMenuPopup>
-    </DropdownMenuRoot>
+    <div className="relative" ref={ref}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="relative h-8 w-8 rounded-full"
+        onClick={() => setOpen(!open)}
+        aria-label="User menu"
+        aria-expanded={open}
+      >
+        {user?.user_metadata?.avatar_url ? (
+          <img
+            src={user.user_metadata.avatar_url}
+            alt={displayName ?? "User"}
+            className="size-full rounded-full object-cover"
+          />
+        ) : (
+          <div className="size-full rounded-full bg-primary flex items-center justify-center">
+            <span className="text-xs font-medium text-primary-foreground">
+              {initials}
+            </span>
+          </div>
+        )}
+      </Button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-popover text-popover-foreground shadow-lg border ring-1 ring-border"
+          >
+            <div className="p-2">
+              <div className="px-3 py-2">
+                <p className="text-sm font-medium">{displayName ?? "User"}</p>
+                <p className="text-xs text-muted-foreground">{email}</p>
+              </div>
+              <Separator />
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent rounded-md"
+                onClick={() => setOpen(false)}
+              >
+                <User className="size-4" />
+                Profile
+              </Link>
+              <Link
+                href="/settings"
+                className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent rounded-md"
+                onClick={() => setOpen(false)}
+              >
+                <Settings className="size-4" />
+                Settings
+              </Link>
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent rounded-md"
+                onClick={() => setOpen(false)}
+              >
+                <Shield className="size-4" />
+                Privacy & Security
+              </Link>
+              <Separator />
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 px-3 py-2 text-sm text-destructive hover:bg-accent hover:text-destructive rounded-md"
+                onClick={async () => {
+                  await signOut();
+                }}
+              >
+                <LogOut className="size-4" />
+                Sign Out
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

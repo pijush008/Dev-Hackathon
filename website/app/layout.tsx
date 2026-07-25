@@ -1,14 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import dynamic from "next/dynamic";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/toaster";
-
-const SpeedInsights = dynamic(
-  () => import("@vercel/speed-insights/next").then((m) => m.SpeedInsights),
-  { ssr: false },
-);
+import { SpeedInsightsProvider } from "@/components/shared/speed-insights-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,26 +20,37 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "SaaS Platform",
-    template: "%s | SaaS Platform",
+    default: "CareCompass",
+    template: "%s | CareCompass",
   },
   description:
-    "The all-in-one platform to build, deploy, and scale your SaaS. Ship faster, grow bigger.",
-  keywords: ["SaaS", "platform", "deploy", "scale", "dashboard"],
-  authors: [{ name: "SaaS Platform" }],
+    "AI-powered healthcare for rural and underserved communities. Symptom checker, medication reminders, mental health support, teleconsultation, and crisis detection — all in one PWA.",
+  keywords: [
+    "healthcare",
+    "rural health",
+    "teleconsultation",
+    "mental health",
+    "medication reminders",
+    "symptom checker",
+    "crisis detection",
+    "medical reports",
+    "community health",
+    "PWA",
+  ],
+  authors: [{ name: "CareCompass" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "SaaS Platform",
-    title: "SaaS Platform - Build, Deploy, Scale",
+    siteName: "CareCompass",
+    title: "CareCompass - Healthcare for Everyone, Everywhere",
     description:
-      "The all-in-one platform to build, deploy, and scale your SaaS.",
+      "AI-powered symptom checking, medication reminders, mental health support, and teleconsultation for rural and underserved communities.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SaaS Platform - Build, Deploy, Scale",
+    title: "CareCompass - Healthcare for Everyone, Everywhere",
     description:
-      "The all-in-one platform to build, deploy, and scale your SaaS.",
+      "AI-powered symptom checking, medication reminders, mental health support, and teleconsultation for rural and underserved communities.",
   },
   robots: {
     index: true,
@@ -71,6 +78,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className="min-h-full flex flex-col">
         <ThemeProvider
           attribute="class"
@@ -78,9 +88,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
-          <SpeedInsights />
+          <TooltipProvider delay={300}>
+            {children}
+            <Toaster />
+            <SpeedInsightsProvider />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

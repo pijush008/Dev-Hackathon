@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
-import { Sun, Moon, Menu } from "lucide-react";
+import { Sun, Moon, Menu, Bell, UserCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/dashboard/user-menu";
 import { NotificationDropdown } from "@/components/dashboard/notifications";
@@ -30,9 +30,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
       <SearchInput className="hidden w-full max-w-xs md:flex lg:max-w-sm" />
 
       <div className="ml-auto flex items-center gap-1">
-        <motion.div
-          whileTap={{ scale: 0.95 }}
-        >
+        <motion.div whileTap={{ scale: 0.95 }}>
           <Button
             variant="ghost"
             size="icon"
@@ -45,7 +43,6 @@ export function Navbar({ onMenuClick }: NavbarProps) {
         </motion.div>
 
         <NotificationDropdown />
-
         <UserMenu />
       </div>
     </header>

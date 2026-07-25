@@ -5,10 +5,14 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
-  BarChart3,
+  HeartPulse,
+  Pill,
+  Calendar,
   Users,
-  FolderKanban,
-  CreditCard,
+  Bell,
+  FileText,
+  Shield,
+  Activity,
   Settings,
   HelpCircle,
   ChevronLeft,
@@ -26,16 +30,20 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, badge: "New" },
-  { label: "Users", href: "/dashboard/users", icon: Users },
-  { label: "Projects", href: "/dashboard/projects", icon: FolderKanban },
-  { label: "Billing", href: "/dashboard/billing", icon: CreditCard },
+  { label: "Dashboard", href: "/", icon: LayoutDashboard },
+  { label: "AI Companion", href: "/chat", icon: HeartPulse, badge: "New" },
+  { label: "Mood & Journal", href: "/mood", icon: Activity },
+  { label: "Medications", href: "/care", icon: Pill },
+  { label: "Appointments", href: "/care/appointments", icon: Calendar },
+  { label: "Reports", href: "/care/reports", icon: FileText },
+  { label: "Care Team", href: "/care/providers", icon: Users },
+  { label: "Notifications", href: "/notifications", icon: Bell },
+  { label: "Emergency", href: "/crisis", icon: Shield },
 ];
 
 const bottomNavItems: NavItem[] = [
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
-  { label: "Help", href: "/dashboard/help", icon: HelpCircle },
+  { label: "Settings", href: "/settings", icon: Settings },
+  { label: "Help", href: "/help", icon: HelpCircle },
 ];
 
 interface SidebarProps {
@@ -56,7 +64,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
       {/* Logo */}
       <div className="flex h-14 items-center gap-2 border-b border-sidebar-border px-3">
         <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-bold text-sidebar-primary-foreground">
-          S
+          C
         </div>
         <AnimatePresence>
           {!collapsed && (
@@ -67,7 +75,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
               transition={{ duration: 0.2 }}
               className="overflow-hidden text-sm font-semibold"
             >
-              SaaS Platform
+              CareCompass
             </motion.span>
           )}
         </AnimatePresence>
@@ -77,7 +85,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
       <nav className="flex-1 space-y-1 p-2">
         {mainNavItems.map((item) => {
           const Icon = item.icon;
-          const active = pathname === item.href;
+          const active = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <Link
               key={item.href}
@@ -87,14 +95,14 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
                 collapsed && "justify-center px-0",
                 active
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
               )}
             >
               {active && (
                 <motion.div
                   layoutId="sidebar-active"
                   className="absolute inset-0 rounded-lg bg-sidebar-accent"
-                  transition={{ type: "spring" as const, stiffness: 350, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
               <Icon className="relative z-10 size-4 shrink-0" />
@@ -140,7 +148,7 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
                 collapsed && "justify-center px-0",
                 active
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
               )}
             >
               <Icon className="size-4 shrink-0" />

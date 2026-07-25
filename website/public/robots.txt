@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /test/
+Disallow: /auth/
+
+Sitemap: https://carecompass.app/sitemap.xml

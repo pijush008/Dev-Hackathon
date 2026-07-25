@@ -192,7 +192,7 @@ export function MedicinesTable({ data, onView, onMarkTaken, onSnooze }: Medicine
                             <>
                               <Button
                                 variant="ghost"
-                                size="icon-xs"
+                                size="icon"
                                 onClick={() => onMarkTaken?.(m)}
                                 title="Mark Taken"
                               >
@@ -200,7 +200,7 @@ export function MedicinesTable({ data, onView, onMarkTaken, onSnooze }: Medicine
                               </Button>
                               <Button
                                 variant="ghost"
-                                size="icon-xs"
+                                size="icon"
                                 onClick={() => onSnooze?.(m)}
                                 title="Snooze"
                               >
@@ -210,7 +210,7 @@ export function MedicinesTable({ data, onView, onMarkTaken, onSnooze }: Medicine
                           )}
                           <Button
                             variant="ghost"
-                            size="icon-xs"
+                            size="icon"
                             onClick={() => onView?.(m)}
                           >
                             <MoreHorizontal className="size-3.5" />

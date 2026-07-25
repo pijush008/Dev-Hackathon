@@ -13,35 +13,35 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
   {
-    name: "Sarah Chen",
-    role: "CTO, TechFlow",
+    name: "Dr. Amara Okafor",
+    role: "Rural Health Physician, Kansas",
     content:
-      "This platform cut our deployment time by 80%. The developer experience is unmatched — we went from idea to production in days, not months.",
-    initials: "SC",
-    color: "from-blue-500 to-indigo-500",
-  },
-  {
-    name: "Marcus Rivera",
-    role: "Founder, ScaleUp",
-    content:
-      "We evaluated a dozen solutions before choosing this one. The security features and global infrastructure made it a no-brainer for our enterprise clients.",
-    initials: "MR",
+      "CareCompass has transformed how I reach patients in underserved areas. The AI symptom checker helps triage before appointments, and the teleconsultation works even on poor connections. It's like having a digital health worker in every village.",
+    initials: "AO",
     color: "from-emerald-500 to-teal-500",
   },
   {
-    name: "Emily Larsson",
-    role: "Engineering Lead, DataPulse",
+    name: "Maria Santos",
+    role: "Patient, New Mexico",
     content:
-      "The API-first design and SDKs meant we were integrated in under a day. The analytics dashboard gives us insights we never had before.",
-    initials: "EL",
+      "I live 45 minutes from the nearest clinic. Being able to check my symptoms at home and share the report with my doctor has saved me so many unnecessary trips. The medication reminders are a lifesaver for my mom's prescriptions.",
+    initials: "MS",
+    color: "from-blue-500 to-indigo-500",
+  },
+  {
+    name: "James Whitefeather",
+    role: "Community Health Worker, Montana",
+    content:
+      "The crisis detection feature has helped me identify two patients who needed immediate intervention. Having 988 and Crisis Text Line resources built right in means I can act fast when someone is struggling.",
+    initials: "JW",
     color: "from-violet-500 to-purple-500",
   },
   {
-    name: "James Okonkwo",
-    role: "VP Product, Nexus",
+    name: "Sarah Kim",
+    role: "Mental Health Counselor, Oregon",
     content:
-      "Switching to this platform was the best decision we made this quarter. Our team productivity increased by 40% almost overnight.",
-    initials: "JO",
+      "I recommend CareCompass to all my clients between sessions. The mood tracker helps them build self-awareness, and the support groups give them community when they need it most. The safety plan feature is clinically sound.",
+    initials: "SK",
     color: "from-amber-500 to-orange-500",
   },
 ];
@@ -62,7 +62,6 @@ const item = {
 export function Testimonials() {
   return (
     <section id="testimonials" className="relative px-4 py-20 sm:py-28">
-      {/* Background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/20 to-background" />
 
       <div className="mx-auto max-w-6xl">
@@ -71,7 +70,7 @@ export function Testimonials() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400"
           >
             Testimonials
           </motion.div>
@@ -82,7 +81,7 @@ export function Testimonials() {
             transition={{ delay: 0.1 }}
             className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
           >
-            Trusted by industry leaders
+            Trusted by patients & providers
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -91,7 +90,8 @@ export function Testimonials() {
             transition={{ delay: 0.2 }}
             className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground"
           >
-            See what our customers are saying about their experience.
+            Hear from the people using CareCompass to bridge the healthcare gap
+            in their communities.
           </motion.p>
         </div>
 
@@ -106,29 +106,25 @@ export function Testimonials() {
             <motion.div
               key={t.name}
               variants={item}
-              className="group relative overflow-hidden rounded-2xl border bg-card p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5"
+              className="group relative overflow-hidden rounded-2xl border bg-card p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5"
             >
-              {/* Quote icon */}
-              <div className="absolute right-4 top-4 text-primary/10">
+              <div className="absolute right-4 top-4 text-emerald-500/10">
                 <Quote className="size-10" />
               </div>
 
-              {/* Stars */}
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
-                    className="size-4 fill-primary text-primary"
+                    className="size-4 fill-amber-400 text-amber-400"
                   />
                 ))}
               </div>
 
-              {/* Content */}
               <p className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">
                 &ldquo;{t.content}&rdquo;
               </p>
 
-              {/* Author */}
               <div className="mt-5 flex items-center gap-3 border-t pt-5">
                 <div
                   className={`flex size-10 items-center justify-center rounded-full bg-gradient-to-br ${t.color} text-xs font-bold text-white`}

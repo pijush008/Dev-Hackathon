@@ -53,7 +53,7 @@ export function WelcomeHeader({ name, email, avatarUrl }: WelcomeHeaderProps) {
           {greeting}, {name}!
         </h1>
         <p className="text-sm text-muted-foreground">
-          Here&apos;s what&apos;s happening with your projects today.
+          Here&apos;s your health summary for today.
         </p>
       </div>
     </motion.div>

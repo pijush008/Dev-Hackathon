@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, ArrowRight, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
   { label: "Features", href: "#features" },
+  { label: "Pricing", href: "#pricing" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "FAQ", href: "#faq" },
 ];
@@ -18,10 +19,10 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-            S
+          <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-600 text-sm font-bold text-white">
+            <Heart className="size-4 fill-white" />
           </div>
-          <span className="text-base font-bold tracking-tight">SaaS</span>
+          <span className="text-base font-bold tracking-tight">CareCompass</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -47,7 +48,7 @@ export function Header() {
           <Link
             href="/auth/signup"
             prefetch={true}
-            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-all hover:brightness-110"
+            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-4 text-sm font-medium text-white transition-all hover:bg-emerald-700"
           >
             Get started
             <ArrowRight className="size-3.5" />
@@ -91,7 +92,7 @@ export function Header() {
           <Link
             href="/auth/signup"
             onClick={() => setMobileOpen(false)}
-            className="block rounded-lg bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground transition-all hover:brightness-110"
+            className="block rounded-lg bg-emerald-600 px-3 py-2.5 text-center text-sm font-medium text-white transition-all hover:bg-emerald-700"
           >
             Get started
           </Link>

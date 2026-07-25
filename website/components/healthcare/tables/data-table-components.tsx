@@ -131,7 +131,7 @@ function DataTablePagination({
         <div className="flex items-center gap-1">
           <Button
             variant="outline"
-            size="icon-xs"
+            size="icon"
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1}
           >
@@ -152,7 +152,7 @@ function DataTablePagination({
               <Button
                 key={pageNum}
                 variant={pageNum === page ? "default" : "outline"}
-                size="icon-xs"
+                size="icon"
                 onClick={() => onPageChange(pageNum)}
               >
                 {pageNum}
@@ -161,7 +161,7 @@ function DataTablePagination({
           })}
           <Button
             variant="outline"
-            size="icon-xs"
+            size="icon"
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages}
           >

@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { rateLimit } from "@/lib/redis";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -29,16 +30,30 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+
   const isAuthPage =
-    request.nextUrl.pathname.startsWith("/auth/login") ||
-    request.nextUrl.pathname.startsWith("/auth/signup") ||
-    request.nextUrl.pathname.startsWith("/auth/forgot-password") ||
-    request.nextUrl.pathname.startsWith("/auth/reset-password") ||
-    request.nextUrl.pathname.startsWith("/auth/verify-email");
+    pathname.startsWith("/auth/login") ||
+    pathname.startsWith("/auth/signup") ||
+    pathname.startsWith("/auth/forgot-password") ||
+    pathname.startsWith("/auth/reset-password") ||
+    pathname.startsWith("/auth/verify-email");
 
   const isProtectedPage =
-    request.nextUrl.pathname.startsWith("/dashboard") ||
-    request.nextUrl.pathname.startsWith("/profile");
+    pathname === "/" ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/consent") ||
+    pathname.startsWith("/crisis-contacts") ||
+    pathname.startsWith("/goals") ||
+    pathname.startsWith("/care") ||
+    pathname.startsWith("/chat") ||
+    pathname.startsWith("/community") ||
+    pathname.startsWith("/crisis") ||
+    pathname.startsWith("/mood") ||
+    pathname.startsWith("/settings") ||
+    pathname.startsWith("/notifications") ||
+    pathname.startsWith("/help") ||
+    pathname.startsWith("/test");
 
   if (isProtectedPage && !user) {
     const url = request.nextUrl.clone();
@@ -48,8 +63,19 @@ export async function updateSession(request: NextRequest) {
 
   if (isAuthPage && user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = "/";
     return NextResponse.redirect(url);
+  }
+
+  if (pathname.startsWith("/auth/login") || pathname.startsWith("/auth/signup")) {
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0] ?? "anonymous";
+    const { allowed } = await rateLimit(`auth:${ip}:${pathname}`, 10, 60);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 },
+      );
+    }
   }
 
   return supabaseResponse;

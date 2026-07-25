@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 import {
-  Zap,
-  Shield,
-  BarChart3,
+  Stethoscope,
+  Pill,
+  Video,
+  ShieldAlert,
+  FileText,
   Users,
-  Globe,
-  Code2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,48 +21,48 @@ interface Feature {
 
 const features: Feature[] = [
   {
-    title: "Lightning Fast",
+    title: "AI Symptom Checker",
     description:
-      "Edge-optimized infrastructure delivers sub-100ms response times globally.",
-    icon: Zap,
+      "Describe your symptoms in natural language and get instant, evidence-based guidance on urgency, possible conditions, and which specialist to see.",
+    icon: Stethoscope,
     className: "sm:col-span-2 sm:row-span-1",
-    gradient: "from-amber-500/10 to-orange-500/10",
-  },
-  {
-    title: "Enterprise Security",
-    description:
-      "SOC 2 compliant with end-to-end encryption and advanced threat detection.",
-    icon: Shield,
     gradient: "from-emerald-500/10 to-teal-500/10",
   },
   {
-    title: "Advanced Analytics",
+    title: "Medication Reminders",
     description:
-      "Real-time dashboards and custom reports to track every metric that matters.",
-    icon: BarChart3,
+      "Never miss a dose. Smart reminders adapt to your schedule, track adherence, and flag dangerous drug interactions before they happen.",
+    icon: Pill,
     gradient: "from-blue-500/10 to-indigo-500/10",
   },
   {
-    title: "Team Collaboration",
+    title: "Rural Teleconsultation",
     description:
-      "Work together in real-time with granular permissions and audit logs.",
-    icon: Users,
+      "Connect with licensed doctors via video — no matter how remote your village is. Low-bandwidth optimized for areas with poor connectivity.",
+    icon: Video,
     gradient: "from-violet-500/10 to-purple-500/10",
   },
   {
-    title: "Global Scale",
+    title: "Crisis Detection & Response",
     description:
-      "Deploy to 30+ regions worldwide with automatic failover and load balancing.",
-    icon: Globe,
-    className: "sm:col-span-2",
-    gradient: "from-cyan-500/10 to-sky-500/10",
+      "Two-pass AI detection identifies mental health crises in real-time and connects you instantly to 988 Lifeline, Crisis Text Line, or emergency services.",
+    icon: ShieldAlert,
+    gradient: "from-rose-500/10 to-red-500/10",
   },
   {
-    title: "API First",
+    title: "Medical Report Analysis",
     description:
-      "RESTful and GraphQL APIs with SDKs for every major language and framework.",
-    icon: Code2,
-    gradient: "from-rose-500/10 to-pink-500/10",
+      "Upload lab results, X-rays, or prescriptions. Our AI explains medical jargon in plain language and tracks trends across your health history.",
+    icon: FileText,
+    className: "sm:col-span-2",
+    gradient: "from-amber-500/10 to-orange-500/10",
+  },
+  {
+    title: "Community Support Groups",
+    description:
+      "Join moderated peer groups for anxiety, depression, chronic pain, grief, and more. You're not alone — find your people.",
+    icon: Users,
+    gradient: "from-cyan-500/10 to-sky-500/10",
   },
 ];
 
@@ -82,7 +82,6 @@ const item = {
 export function Features() {
   return (
     <section id="features" className="relative px-4 py-20 sm:py-28">
-      {/* Background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/30 to-background" />
 
       <div className="mx-auto max-w-6xl">
@@ -91,7 +90,7 @@ export function Features() {
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/5 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400"
           >
             Features
           </motion.div>
@@ -102,7 +101,11 @@ export function Features() {
             transition={{ delay: 0.1 }}
             className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
           >
-            Everything you need to scale
+            Everything you need for
+            <br />
+            <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+              better health decisions
+            </span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -111,8 +114,8 @@ export function Features() {
             transition={{ delay: 0.2 }}
             className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground"
           >
-            From prototyping to production, our platform has the tools to
-            support your journey at every stage.
+            From symptom checking to crisis response, CareCompass puts
+            healthcare tools in the hands of people who need them most.
           </motion.p>
         </div>
 
@@ -129,14 +132,13 @@ export function Features() {
               <motion.div
                 key={feature.title}
                 variants={item}
-                className={`group relative overflow-hidden rounded-2xl border bg-card p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 ${feature.className ?? ""}`}
+                className={`group relative overflow-hidden rounded-2xl border bg-card p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1 ${feature.className ?? ""}`}
               >
-                {/* Gradient background on hover */}
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
                 />
                 <div className="relative">
-                  <div className="mb-4 inline-flex size-11 items-center justify-center rounded-xl border bg-background/50 text-primary backdrop-blur-sm">
+                  <div className="mb-4 inline-flex size-11 items-center justify-center rounded-xl border bg-background/50 text-emerald-600 dark:text-emerald-400 backdrop-blur-sm">
                     <Icon className="size-5" />
                   </div>
                   <h3 className="text-lg font-semibold">{feature.title}</h3>
