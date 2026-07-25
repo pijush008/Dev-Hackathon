@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Send, Sparkles, User, Bot, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { Send, Sparkles, User, Bot, Loader2, AlertTriangle, Phone, Heart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { useChat } from "@/hooks/useChat";
+import { useChat, type CrisisInfo } from "@/hooks/useChat";
+import Link from "next/link";
 
 const suggestions = [
   "Check my latest blood test",
@@ -16,13 +17,13 @@ const suggestions = [
 ];
 
 export function AIAssistant() {
-  const { messages, loading, send } = useChat();
+  const { messages, loading, crisis, error, send } = useChat();
   const [input, setInput] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, crisis, error]);
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -48,7 +49,7 @@ export function AIAssistant() {
       <CardContent className="flex min-h-0 flex-1 flex-col">
         <ScrollArea className="max-h-[280px] pr-2">
           <div className="space-y-3">
-            {messages.length === 0 && (
+            {messages.length === 0 && !crisis && !error && (
               <div className="py-6 text-center">
                 <p className="text-xs text-muted-foreground">Ask me anything about your health.</p>
               </div>
@@ -74,6 +75,41 @@ export function AIAssistant() {
                 </div>
               </motion.div>
             ))}
+
+            {crisis && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="rounded-xl border border-red-500/30 bg-red-500/5 p-3 space-y-2"
+              >
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="size-4 text-red-600 dark:text-red-400" />
+                  <span className="text-xs font-semibold text-red-700 dark:text-red-400">We care about your safety</span>
+                </div>
+                <div className="flex gap-2">
+                  <a href="tel:988" className="flex items-center gap-1 rounded-lg bg-red-500/10 px-2 py-1.5 text-[11px] font-medium text-red-700 dark:text-red-400">
+                    <Phone className="size-3" /> Call 988
+                  </a>
+                  <a href="sms:741741&body=HELLO" className="flex items-center gap-1 rounded-lg bg-red-500/10 px-2 py-1.5 text-[11px] font-medium text-red-700 dark:text-red-400">
+                    <Heart className="size-3" /> Text 741741
+                  </a>
+                </div>
+              </motion.div>
+            )}
+
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex gap-2"
+              >
+                <AlertTriangle className="size-4 shrink-0 text-red-500" />
+                <div className="max-w-[80%] rounded-xl border border-red-500/30 bg-red-500/5 px-3 py-2 text-[13px] text-red-700 dark:text-red-400">
+                  {error}
+                </div>
+              </motion.div>
+            )}
+
             {loading && (
               <div className="flex gap-2">
                 <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -90,7 +126,7 @@ export function AIAssistant() {
           </div>
         </ScrollArea>
 
-        {messages.length <= 1 && (
+        {messages.length <= 1 && !crisis && !error && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {suggestions.map((s) => (
               <button

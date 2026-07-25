@@ -117,16 +117,6 @@ export async function sendChatMessage(
 ) {
   try {
     await requireAuth();
-    const crisis = await detectCrisis(message);
-    if (crisis.crisisDetected && crisis.riskLevel !== "none") {
-      return {
-        success: true,
-        data: {
-          content: "",
-          crisis,
-        },
-      } as const;
-    }
 
     const messages = [
       ...history.map((m) => ({ role: m.role as "user" | "assistant", content: m.content })),
@@ -152,5 +142,19 @@ export async function sendChatMessage(
         ? "Not authenticated"
         : "Failed to send message. Please try again.",
     } as const;
+  }
+}
+
+export async function detectCrisisInMessage(message: string) {
+  try {
+    await requireAuth();
+    return await detectCrisis(message);
+  } catch {
+    return {
+      crisisDetected: false,
+      riskLevel: "none" as const,
+      indicators: [],
+      recommendedAction: "resource_only" as const,
+    };
   }
 }
