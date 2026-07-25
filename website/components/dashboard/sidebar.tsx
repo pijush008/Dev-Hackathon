@@ -16,6 +16,7 @@ import {
   Settings,
   HelpCircle,
   ChevronLeft,
+  Crown,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -136,6 +137,29 @@ export function Sidebar({ collapsed, onToggleCollapse }: SidebarProps) {
       {/* Bottom Nav */}
       <div className="space-y-1 p-2">
         <Separator className="mb-2" />
+        <Link
+          href="/#pricing"
+          className={cn(
+            "flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors",
+            collapsed && "justify-center px-0",
+            "text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-700 dark:text-emerald-400 dark:hover:bg-emerald-500/10"
+          )}
+        >
+          <Crown className="size-4 shrink-0" />
+          <AnimatePresence>
+            {!collapsed && (
+              <motion.span
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "auto" }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden whitespace-nowrap"
+              >
+                Upgrade to Pro
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </Link>
         {bottomNavItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;

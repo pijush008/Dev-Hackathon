@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { CheckoutModal } from "@/components/payments/checkout-modal";
 
 interface PricingTier {
   name: string;
@@ -11,6 +13,7 @@ interface PricingTier {
   features: string[];
   highlighted?: boolean;
   cta: string;
+  action?: "checkout" | "signup" | "mailto";
 }
 
 const tiers: PricingTier[] = [
@@ -26,10 +29,11 @@ const tiers: PricingTier[] = [
       "Basic health dashboard",
     ],
     cta: "Get started free",
+    action: "signup",
   },
   {
     name: "Pro",
-    price: "$9",
+    price: "\u20B9749",
     description: "Full access for individuals who need comprehensive care.",
     highlighted: true,
     features: [
@@ -41,7 +45,8 @@ const tiers: PricingTier[] = [
       "Priority AI responses",
       "Ad-free experience",
     ],
-    cta: "Start free trial",
+    cta: "Subscribe now",
+    action: "checkout",
   },
   {
     name: "Clinic",
@@ -58,6 +63,7 @@ const tiers: PricingTier[] = [
       "White-label option",
     ],
     cta: "Contact us",
+    action: "mailto",
   },
 ];
 
@@ -75,6 +81,14 @@ const item = {
 };
 
 export function Pricing() {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState("");
+
+  const handleCheckout = (planName: string) => {
+    setSelectedPlan(planName.toLowerCase());
+    setCheckoutOpen(true);
+  };
+
   return (
     <section id="pricing" className="relative px-4 py-20 sm:py-28">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-muted/20 to-background" />
@@ -162,24 +176,51 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <Link
-                href={
-                  tier.name === "Clinic"
-                    ? "mailto:support@carecompass.app"
-                    : "/auth/signup"
-                }
-                className={`mt-7 inline-flex h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-medium transition-all ${
-                  tier.highlighted
-                    ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 hover:bg-emerald-700"
-                    : "border border-border bg-background text-foreground hover:bg-muted"
-                }`}
-              >
-                {tier.cta}
-              </Link>
+              {tier.action === "checkout" ? (
+                <button
+                  onClick={() => handleCheckout(tier.name)}
+                  className={`mt-7 inline-flex h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-medium transition-all ${
+                    tier.highlighted
+                      ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 hover:bg-emerald-700"
+                      : "border border-border bg-background text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {tier.cta}
+                </button>
+              ) : tier.action === "mailto" ? (
+                <a
+                  href="mailto:support@carecompass.app"
+                  className={`mt-7 inline-flex h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-medium transition-all ${
+                    tier.highlighted
+                      ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 hover:bg-emerald-700"
+                      : "border border-border bg-background text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {tier.cta}
+                </a>
+              ) : (
+                <Link
+                  href="/auth/signup"
+                  className={`mt-7 inline-flex h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-medium transition-all ${
+                    tier.highlighted
+                      ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 hover:bg-emerald-700"
+                      : "border border-border bg-background text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {tier.cta}
+                </Link>
+              )}
             </motion.div>
           ))}
         </motion.div>
       </div>
+
+      <CheckoutModal
+        open={checkoutOpen}
+        onOpenChange={setCheckoutOpen}
+        plan={selectedPlan}
+        price="\u20B9749"
+      />
     </section>
   );
 }

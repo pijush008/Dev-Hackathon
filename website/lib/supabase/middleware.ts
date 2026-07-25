@@ -52,6 +52,7 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith("/settings") ||
     pathname.startsWith("/notifications") ||
     pathname.startsWith("/help") ||
+    pathname.startsWith("/receipt") ||
     pathname.startsWith("/test");
 
   if (isProtectedPage && !user) {
