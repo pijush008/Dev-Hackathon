@@ -190,15 +190,17 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={signInWithGoogle}
-            disabled={isPending}
-          >
-            <GoogleIcon className="mr-2 size-5" />
-            Google
-          </Button>
+          <form action={signInWithGoogle}>
+            <Button
+              type="submit"
+              variant="outline"
+              className="w-full"
+              disabled={isPending}
+            >
+              <GoogleIcon className="mr-2 size-5" />
+              Google
+            </Button>
+          </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <p className="text-center text-sm text-muted-foreground">
