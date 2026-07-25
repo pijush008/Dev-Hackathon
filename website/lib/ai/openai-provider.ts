@@ -5,6 +5,7 @@ import type {
   AICompletionResponse,
   AIStreamChunk,
 } from "./provider";
+import { GoogleProvider } from "./google-provider";
 
 export interface OpenAIProviderConfig {
   apiKey?: string;
@@ -70,7 +71,16 @@ let _defaultProvider: AIProvider | null = null;
 
 export function getAIProvider(config?: OpenAIProviderConfig): AIProvider {
   if (!_defaultProvider) {
-    _defaultProvider = new OpenAIProvider(config);
+    const provider = (process.env.AI_PROVIDER ?? "openai").toLowerCase();
+
+    if (provider === "google" || provider === "gemini") {
+      _defaultProvider = new GoogleProvider({
+        apiKey: process.env.GOOGLE_API_KEY,
+        defaultModel: process.env.AI_MODEL,
+      });
+    } else {
+      _defaultProvider = new OpenAIProvider(config);
+    }
   }
   return _defaultProvider;
 }
