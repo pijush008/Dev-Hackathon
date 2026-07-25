@@ -22,7 +22,7 @@ export async function GET() {
       baseURL: process.env.OPENAI_BASE_URL,
     });
     const res = await client.chat.completions.create({
-      model: "openai/gpt-4o",
+      model: "gpt-4o",
       messages: [{ role: "user", content: "Say hi in 5 words" }],
       max_tokens: 20,
     });

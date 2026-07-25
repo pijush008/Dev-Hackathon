@@ -12,7 +12,7 @@ export interface OpenAIProviderConfig {
   defaultModel?: string;
 }
 
-const DEFAULT_MODEL = "openai/gpt-4o";
+const DEFAULT_MODEL = "gpt-4o";
 
 export class OpenAIProvider implements AIProvider {
   private client: OpenAI;
