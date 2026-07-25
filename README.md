@@ -404,21 +404,31 @@ supabase/migrations/006_functions.sql        → Triggers, indexes, auto-profile
 
 ## Redis Setup
 
-CareCompass uses [Upstash Redis](https://upstash.com) (serverless, pay-per-request) for rate limiting.
+CareCompass supports two Redis modes for rate limiting and caching.
 
-### 1. Create Account
+### Option 1: Docker Redis (Recommended for Development)
+
+No setup needed — Docker Compose provides a Redis 7 instance automatically.
+
+```bash
+docker compose up -d redis
+redis-cli -h localhost ping  # PONG
+```
+
+### Option 2: Upstash Redis (Recommended for Production/Vercel)
+
+For serverless deployments, use [Upstash Redis](https://upstash.com) (pay-per-request):
+
 1. Go to [upstash.com](https://upstash.com) → Sign up (free tier: 10,000 commands/day)
 2. Create a new Redis database (any region)
+3. Copy the **REST URL** and **REST Token** from your database dashboard
+4. Set in Vercel: `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
 
-### 2. Get Credentials
-Copy the **REST URL** and **REST Token** from your database dashboard.
-
-### 3. Rate Limiting Configuration
+### Rate Limiting Configuration
 The rate limiter is configured in `lib/supabase/middleware.ts`:
 - **Auth endpoints** (`/auth/login`, `/auth/signup`): 10 requests per minute per IP
 - Uses sliding window counter via `redisIncr()` with TTL
-
-If Redis is not configured, rate limiting is silently disabled (app continues to work).
+- If Redis is not configured, rate limiting is silently disabled (app continues to work)
 
 ---
 
@@ -469,7 +479,26 @@ npm run dev
 
 ## Docker
 
-### Build and Run
+### Quick Start (Docker Compose)
+
+```bash
+# 1. Copy and configure environment
+cp .env.example .env.docker
+# Edit .env.docker with your keys
+
+# 2. Start all services (Nginx + Next.js + Redis)
+docker compose up -d
+
+# 3. Access the app
+open http://localhost
+```
+
+This starts three containers:
+- **Nginx** (port 80/443) — reverse proxy with caching, rate limiting, security headers
+- **Next.js App** (internal port 3000) — the CareCompass application
+- **Redis** (port 6379) — session cache and rate limiting
+
+### Build and Run (Standalone)
 
 ```bash
 # Build the image
@@ -481,37 +510,112 @@ docker run -p 3000:3000 \
   -e NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ... \
   -e SUPABASE_SERVICE_ROLE_KEY=eyJ... \
   -e NEXT_PUBLIC_SITE_URL=https://your-domain.com \
-  -e UPSTASH_REDIS_REST_URL=https://... \
-  -e UPSTASH_REDIS_REST_TOKEN=... \
+  -e REDIS_URL=redis://host:6379 \
   -e OPENAI_API_KEY=sk-... \
   carecompass
 ```
 
-### Docker Compose (with Redis)
+### Docker Compose Services
 
 ```yaml
-version: "3.8"
+# docker-compose.yml
 services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env.local
-    depends_on:
-      - redis
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
+  nginx:     # Reverse proxy — ports 80/443
+  app:       # Next.js — internal port 3000
+  redis:     # Cache — port 6379
 ```
 
 ### Multi-Stage Build
 The Dockerfile uses a 3-stage build:
-1. **deps** — Install dependencies (`npm ci`)
+1. **deps** — Install production dependencies (`npm ci --omit=dev`)
 2. **builder** — Build Next.js with `output: "standalone"`
 3. **runner** — Minimal `node:20-alpine` with only the standalone output (~90MB)
+
+### Container Management
+
+```bash
+# View logs
+docker compose logs -f nginx
+docker compose logs -f app
+docker compose logs -f redis
+
+# Restart a service
+docker compose restart app
+
+# Stop all services
+docker compose down
+
+# Stop and remove volumes
+docker compose down -v
+
+# Rebuild after code changes
+docker compose up -d --build
+```
+
+---
+
+## Nginx Configuration
+
+Nginx sits in front of the Next.js app as a reverse proxy (`docker/nginx/`).
+
+### Features
+- **Reverse proxy** — forwards requests to the Next.js app
+- **Gzip compression** — compresses text, JSON, XML, JavaScript, CSS, SVG, fonts
+- **Static asset caching** — `/_next/static/` cached for 1 year (immutable), images for 30 days
+- **Rate limiting** — 10 req/s for API endpoints, 5 req/min for auth endpoints
+- **Security headers** — X-Frame-Options, X-Content-Type-Options, HSTS, CSP, Referrer-Policy
+- **WebSocket support** — for Next.js HMR in development
+- **Health check** — `GET /health` returns 200 OK
+
+### Rate Limits
+| Zone | Rate | Burst | Applied To |
+|------|------|-------|------------|
+| `api` | 10 req/s | 20 | `/api/*` |
+| `auth` | 5 req/min | 3 | `/auth/*` |
+
+### Cache Headers
+| Path | Cache Duration | Notes |
+|------|---------------|-------|
+| `/_next/static/*` | 1 year | Immutable, content-hashed |
+| `*.png, *.jpg, *.svg` | 30 days | Static assets |
+| `/sw.js` | No cache | Service worker |
+| `/manifest.json` | 1 day | PWA manifest |
+
+---
+
+## Redis Configuration
+
+CareCompass supports two Redis modes:
+
+### 1. Docker Redis (Local)
+When running via Docker Compose, a local Redis 7 instance is provided:
+- **URL:** `redis://redis:6379` (from Docker network)
+- **Persistence:** AOF + RDB snapshots
+- **Memory:** 256MB with LRU eviction
+- **No external account needed**
+
+### 2. Upstash Redis (Serverless/Production)
+For Vercel or serverless deployments, use [Upstash Redis](https://upstash.com):
+- Free tier: 10,000 commands/day
+- Set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`
+
+### Rate Limiting
+The rate limiter uses Redis `INCR` with TTL-based sliding windows:
+- **Auth endpoints** (`/auth/login`, `/auth/signup`): 10 requests per minute per IP
+- Uses `redisIncr()` with automatic key expiry
+- If Redis is unavailable, rate limiting is silently disabled (app continues to work)
+
+### Redis Operations
+```typescript
+import { redisGet, redisSet, redisDel, redisPing } from "@/lib/redis";
+
+// Get/Set with optional TTL
+await redisGet<User>("user:123");
+await redisSet("session:abc", data, 3600); // expires in 1 hour
+
+// Health check
+const alive = await redisPing(); // true/false
+```
 
 ---
 
