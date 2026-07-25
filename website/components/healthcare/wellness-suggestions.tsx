@@ -14,6 +14,7 @@ import {
   Moon,
   Droplets,
   SmilePlus,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,7 +41,7 @@ const topics: Topic[] = [
 ];
 
 export function WellnessSuggestions() {
-  const { result, loading, getSuggestions, clear } = useWellness();
+  const { result, loading, error, getSuggestions, clear } = useWellness();
   const [customTopic, setCustomTopic] = useState("");
 
   const handleTopicClick = async (topic: Topic) => {
@@ -104,6 +105,18 @@ export function WellnessSuggestions() {
       </div>
 
       <AIDisclaimer variant="compact" />
+
+      {/* Error */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/5 px-3 py-2.5 text-sm text-red-700 dark:text-red-400"
+        >
+          <AlertTriangle className="size-4 shrink-0" />
+          {error}
+        </motion.div>
+      )}
 
       {/* Results */}
       <AnimatePresence>

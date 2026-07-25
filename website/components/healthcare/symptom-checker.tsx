@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 const severityOptions = ["mild", "moderate", "severe", "very-severe"] as const;
 
 export function SymptomChecker() {
-  const { result, loading, check, clear } = useSymptomCheck();
+  const { result, loading, error, check, clear } = useSymptomCheck();
   const [symptoms, setSymptoms] = useState<SymptomInput[]>([
     { name: "", severity: "moderate", duration: "", description: "" },
   ]);
@@ -121,6 +121,13 @@ export function SymptomChecker() {
       </div>
 
       <AIDisclaimer variant="compact" />
+
+      {error && (
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/5 px-3 py-2.5 text-sm text-red-700 dark:text-red-400">
+          <AlertTriangle className="size-4 shrink-0" />
+          {error}
+        </motion.div>
+      )}
 
       {/* Results */}
       <AnimatePresence>

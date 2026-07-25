@@ -95,18 +95,21 @@ export function useChat() {
 export function useSymptomCheck() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const check = useCallback(async (symptoms: SymptomInput[], patientInfo?: { age?: number; gender?: string; medicalHistory?: string }) => {
     setLoading(true);
+    setError(null);
     const res = await checkSymptoms(symptoms, patientInfo);
     setLoading(false);
     if (res.success && res.data) setResult(res.data);
+    else setError(res.error || "Failed to analyze symptoms.");
     return res;
   }, []);
 
-  const clear = useCallback(() => setResult(null), []);
+  const clear = useCallback(() => { setResult(null); setError(null); }, []);
 
-  return { result, loading, check, clear };
+  return { result, loading, error, check, clear };
 }
 
 // ─── Report Explainer Hook ──────────────────────────────────────────────────
@@ -114,18 +117,21 @@ export function useSymptomCheck() {
 export function useReportExplainer() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const explain = useCallback(async (reportText: string, reportType?: string) => {
     setLoading(true);
+    setError(null);
     const res = await explainReport(reportText, reportType);
     setLoading(false);
     if (res.success && res.data) setResult(res.data);
+    else setError(res.error || "Failed to explain report.");
     return res;
   }, []);
 
-  const clear = useCallback(() => setResult(null), []);
+  const clear = useCallback(() => { setResult(null); setError(null); }, []);
 
-  return { result, loading, explain, clear };
+  return { result, loading, error, explain, clear };
 }
 
 // ─── Medication Guidance Hook ───────────────────────────────────────────────
@@ -133,18 +139,21 @@ export function useReportExplainer() {
 export function useMedicationGuidance() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const ask = useCallback(async (question: string, context?: { medications?: string[]; conditions?: string[] }) => {
     setLoading(true);
+    setError(null);
     const res = await getMedicationGuidance(question, context);
     setLoading(false);
     if (res.success && res.data) setResult(res.data);
+    else setError(res.error || "Failed to get guidance.");
     return res;
   }, []);
 
-  const clear = useCallback(() => setResult(null), []);
+  const clear = useCallback(() => { setResult(null); setError(null); }, []);
 
-  return { result, loading, ask, clear };
+  return { result, loading, error, ask, clear };
 }
 
 // ─── Wellness Suggestions Hook ──────────────────────────────────────────────
@@ -152,16 +161,19 @@ export function useMedicationGuidance() {
 export function useWellness() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getSuggestions = useCallback(async (topic: string, context?: { age?: number; conditions?: string[] }) => {
     setLoading(true);
+    setError(null);
     const res = await getWellnessSuggestions(topic, context);
     setLoading(false);
     if (res.success && res.data) setResult(res.data);
+    else setError(res.error || "Failed to generate suggestions.");
     return res;
   }, []);
 
-  const clear = useCallback(() => setResult(null), []);
+  const clear = useCallback(() => { setResult(null); setError(null); }, []);
 
-  return { result, loading, getSuggestions, clear };
+  return { result, loading, error, getSuggestions, clear };
 }

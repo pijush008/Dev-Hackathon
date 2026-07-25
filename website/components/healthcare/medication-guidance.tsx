@@ -18,7 +18,7 @@ const quickQuestions = [
 ];
 
 export function MedicationGuidance() {
-  const { result, loading, ask, clear } = useMedicationGuidance();
+  const { result, loading, error, ask, clear } = useMedicationGuidance();
   const [question, setQuestion] = useState("");
 
   const handleSubmit = async (q?: string) => {
@@ -75,6 +75,13 @@ export function MedicationGuidance() {
       )}
 
       <AIDisclaimer variant="compact" />
+
+      {error && (
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/5 px-3 py-2.5 text-sm text-red-700 dark:text-red-400">
+          <AlertTriangle className="size-4 shrink-0" />
+          {error}
+        </motion.div>
+      )}
 
       {/* Results */}
       <AnimatePresence>

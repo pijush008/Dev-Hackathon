@@ -7,6 +7,7 @@ import {
   Loader2,
   Upload,
   ChevronRight,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,7 +26,7 @@ const reportTypes = [
 ];
 
 export function ReportExplainer() {
-  const { result, loading, explain, clear } = useReportExplainer();
+  const { result, loading, error, explain, clear } = useReportExplainer();
   const [text, setText] = useState("");
   const [reportType, setReportType] = useState("General");
 
@@ -84,6 +85,13 @@ export function ReportExplainer() {
       </Button>
 
       <AIDisclaimer variant="compact" />
+
+      {error && (
+        <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/5 px-3 py-2.5 text-sm text-red-700 dark:text-red-400">
+          <AlertTriangle className="size-4 shrink-0" />
+          {error}
+        </motion.div>
+      )}
 
       {/* Results */}
       <AnimatePresence>
