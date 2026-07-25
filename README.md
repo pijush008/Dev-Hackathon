@@ -701,12 +701,6 @@ auth.users
 ### Medical Reports
 ![Medical Reports](docs/screenshots/reports.png)
 
-### Crisis Resources
-![Crisis Resources](docs/screenshots/crisis.png)
-
-### Mobile View
-![Mobile Dashboard](docs/screenshots/mobile.png)
-
 ---
 
 ## Performance Optimizations
