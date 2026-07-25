@@ -140,7 +140,7 @@ export async function sendChatMessage(
       success: false,
       error: error instanceof Error && error.message === "Not authenticated"
         ? "Not authenticated"
-        : "Failed to send message. Please try again.",
+        : `Failed to send message: ${error instanceof Error ? error.message : "Unknown error"}`,
     } as const;
   }
 }
