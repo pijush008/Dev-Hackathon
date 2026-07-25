@@ -69,7 +69,7 @@ function CrisisAlert({ crisis }: { crisis: CrisisInfo }) {
 }
 
 export function HealthChat() {
-  const { messages, loading, crisis, send, clear } = useChat();
+  const { messages, loading, crisis, error, send, clear } = useChat();
   const [input, setInput] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -135,6 +135,21 @@ export function HealthChat() {
           ))}
 
           {crisis && <CrisisAlert crisis={crisis} />}
+
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex gap-2.5"
+            >
+              <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-600">
+                <AlertTriangle className="size-3.5" />
+              </div>
+              <div className="max-w-[80%] whitespace-pre-line rounded-xl border border-red-500/30 bg-red-500/5 px-3.5 py-2.5 text-sm leading-relaxed text-red-700 dark:text-red-400">
+                {error}
+              </div>
+            </motion.div>
+          )}
 
           {loading && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2.5">

@@ -34,6 +34,7 @@ export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [crisis, setCrisis] = useState<CrisisInfo | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const messagesRef = useRef<ChatMessage[]>([]);
 
   const send = useCallback(async (content: string) => {
@@ -49,6 +50,7 @@ export function useChat() {
     });
     setLoading(true);
     setCrisis(null);
+    setError(null);
 
     const history = messagesRef.current.map((m) => ({ role: m.role, content: m.content }));
     const result = await sendChatMessage(content, history);
@@ -69,6 +71,12 @@ export function useChat() {
         messagesRef.current = [...prev, aiMsg];
         return [...prev, aiMsg];
       });
+    } else if (!result.success) {
+      setError(result.error || "Failed to send message. Please try again.");
+      setMessages((prev) => {
+        messagesRef.current = prev;
+        return prev;
+      });
     }
   }, []);
 
@@ -76,9 +84,10 @@ export function useChat() {
     messagesRef.current = [];
     setMessages([]);
     setCrisis(null);
+    setError(null);
   }, []);
 
-  return { messages, loading, crisis, send, clear };
+  return { messages, loading, crisis, error, send, clear };
 }
 
 // ─── Symptom Check Hook ─────────────────────────────────────────────────────
