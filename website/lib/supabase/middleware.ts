@@ -40,7 +40,6 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith("/auth/verify-email");
 
   const isProtectedPage =
-    pathname === "/" ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/consent") ||
     pathname.startsWith("/crisis-contacts") ||
