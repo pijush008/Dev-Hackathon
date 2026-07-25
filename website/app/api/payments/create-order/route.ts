@@ -3,8 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createOrder, isRazorpayConfigured } from "@/lib/razorpay";
 
 const PLAN_PRICES: Record<string, { amount: number; currency: string }> = {
-  pro: { amount: 749, currency: "INR" },
-  clinic: { amount: 0, currency: "INR" },
+  pro: { amount: 499, currency: "INR" },
+  family: { amount: 999, currency: "INR" },
 };
 
 export async function POST(request: Request) {
@@ -24,10 +24,6 @@ export async function POST(request: Request) {
 
     if (!plan || !PLAN_PRICES[plan]) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
-    }
-
-    if (plan === "clinic") {
-      return NextResponse.json({ error: "Contact support for Clinic plan" }, { status: 400 });
     }
 
     const { amount, currency } = PLAN_PRICES[plan];
