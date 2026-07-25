@@ -19,10 +19,10 @@ import { Loader2, Mail, AlertCircle } from "lucide-react";
 export default function ForgotPasswordPage() {
   const [state, formAction, isPending] = useActionState(
     sendPasswordResetEmail,
-    { error: null, fieldErrors: {} },
+    { error: null, fieldErrors: {}, submitted: false },
   );
 
-  if (state.error === null && !isPending) {
+  if (state.error === null && state.submitted && !isPending) {
     return (
       <div className="w-full max-w-md">
         <Card>

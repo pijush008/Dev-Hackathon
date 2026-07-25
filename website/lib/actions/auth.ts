@@ -13,6 +13,7 @@ import {
 export interface AuthState {
   error: string | null;
   fieldErrors?: Record<string, string>;
+  submitted?: boolean;
 }
 
 function formatZodError(error: {
@@ -141,7 +142,7 @@ export async function sendPasswordResetEmail(
     return { error: error.message };
   }
 
-  return { error: null };
+  return { error: null, submitted: true };
 }
 
 export async function updatePassword(
